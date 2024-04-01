@@ -1,0 +1,62 @@
+[
+  {
+    "id": 1,
+    "proImg": "/product/img-1.jpg",
+    "title": "Ninja Hoodi",
+    "slug": "Ninja-Hoodi",
+    "price": "340.00",
+    "delPrice": "380.00",
+    "brand":"Gucci",
+    "size":"Xl"
+  },
+  {
+    "id": 2,
+    "proImg": "/product/img-2.jpg",
+    "title": "Wow Ninja T-shirt",
+    "slug": "Wow-T-shirt",
+    "price": "65.00",
+    "delPrice": "85.00",
+    "brand":"Gucci",
+    "size":"XXl"
+  },
+  {
+    "id": 3,
+    "proImg": "/product/img-3.jpg",
+    "title": "Black Ninja Hoodi",
+    "slug": "Black-Ninja-Hoodi",
+    "price": "285.00",
+    "delPrice": "300.00",
+    "brand":"Gucci",
+    "size":"L"
+  },
+  {
+    "id": 4,
+    "proImg": "/product/img-4.jpg",
+    "title": "Red Ninja Hoodi",
+    "slug": "Red-Ninja-Hoodi",
+    "price": "176.00",
+    "delPrice": "178.00",
+    "brand":"Gucci",
+    "size":"M"
+  },
+  {
+    "id": 5,
+    "proImg": "/product/img-5.jpg",
+    "title": "Black Evil Hoodi",
+    "slug": "Black-Evil-Hoodi",
+    "price": "125.00",
+    "delPrice": "130.00",
+    "brand":"Gucci",
+    "size":"XXl"
+  },
+  {
+    "id": 6,
+    "proImg": "/product/img-6.jpg",
+    "title": "Blue Hoodi",
+    "slug": "Blue-Hoodi",
+    "price": "548.00",
+    "delPrice": "600.00",
+    "brand":"Gucci",
+    "size":"Xl"
+  }
+]

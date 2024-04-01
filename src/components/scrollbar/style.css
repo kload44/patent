@@ -1,0 +1,53 @@
+ul.smothscroll {
+    position: fixed;
+    bottom: 25px;
+    right: 30px;
+    list-style: none;
+    z-index: 99;
+}
+
+ul.smothscroll a {
+    background-color: rgba(201, 179, 140, 0.7);
+    width: 45px;
+    height: 45px;
+    line-height: 45px;
+    border: 2px solid #c9b38c;
+    border-radius: 0;
+    text-align: center;
+    position: fixed;
+    z-index: 999;
+    right: 15px;
+    bottom: 15px;
+    -webkit-transition: all 0.2s;
+    -moz-transition: all 0.2s;
+    -o-transition: all 0.2s;
+    -ms-transition: all 0.2s;
+    transition: all 0.2s;
+}
+
+ul.smothscroll a i {
+    font-size: 22px;
+    font-size: 1.375rem;
+    color: #fff;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    -moz-transform: translate(-50%, -50%);
+    -o-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+}
+
+ul.smothscroll a:hover {
+    background-color: #c9b38c;
+    color: #fff;
+}
+
+@media(max-width:767px) {
+    ul.smothscroll a {
+        width: 30px;
+        height: 30px;
+        line-height: 25px;
+    }
+}
