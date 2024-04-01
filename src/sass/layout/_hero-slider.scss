@@ -496,8 +496,8 @@
 
 	&:before {
 		content: "";
-		background: -webkit-linear-gradient(left, $theme-secondary-color 60%, $theme-primary-color 60%);
-		background: linear-gradient(left, $theme-secondary-color 60%, $theme-primary-color 60%);
+		background: -webkit-linear-gradient(to right, $theme-secondary-color 60%, $theme-primary-color 60%);
+		background: linear-gradient(to right, $theme-secondary-color 60%, $theme-primary-color 60%);
 		width: 120%;
 		height: 100%;
 		position: absolute;
