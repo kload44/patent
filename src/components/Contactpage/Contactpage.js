@@ -11,22 +11,22 @@ const Contactpage = (props) => {
                             <ul>
                                 <li>
                                     <i className="fi flaticon-home-3"></i>
-                                    <h4>Head Office</h4>
+                                    <h4>찾아오는 길</h4>
                                     <p>54, Dahs udin sorok, Melborn Austria</p>
                                 </li>
                                 <li>
                                     <i className="fi flaticon-email"></i>
-                                    <h4>Email Address</h4>
+                                    <h4>이메일</h4>
                                     <p>demo@example.com</p>
                                 </li>
                                 <li>
                                     <i className="fi flaticon-support"></i>
-                                    <h4>Telephone</h4>
+                                    <h4>전화번호</h4>
                                     <p>654756175+5474</p>
                                 </li>
                                 <li>
                                     <i className="fi flaticon-clock"></i>
-                                    <h4>Office Hour</h4>
+                                    <h4>영업시간</h4>
                                     <p>Mon-Sun: 10am – 7pm</p>
                                 </li>
                             </ul>
@@ -46,11 +46,6 @@ const Contactpage = (props) => {
                             <ContactFrom />
                         </div>
                     </div>
-                </div>
-            </section>
-            <section className="contact-map-section section-padding pb-0">
-                <div className="contact-map">
-                    <iframe title='contact-map' src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d193595.9147703055!2d-74.11976314309273!3d40.69740344223377!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c24fa5d33f083b%3A0xc80b8f06e177fe62!2sNew+York%2C+NY%2C+USA!5e0!3m2!1sen!2sbd!4v1547528325671" allowfullscreen></iframe>
                 </div>
             </section>
         </div>

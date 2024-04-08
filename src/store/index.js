@@ -1,19 +1,21 @@
 import { createStore, compose, applyMiddleware } from "redux";
 
 import { persistStore, persistReducer } from "redux-persist";
-import storage from "redux-persist/lib/storage"; // defaults to localStorage for web
+// import storage from "redux-persist/lib/storage";
 
 // middlewares
 import thunk from "redux-thunk";
 
 // Import custom components
 import rootReducer from "./reducers/rootReducers";
+import createWebStorage from "redux-persist/es/storage/createWebStorage";
 
 const middleware = [thunk];
 
+const sessionStorage = createWebStorage('session');
 const persistConfig = {
   key: "root",
-  storage,
+  storage:sessionStorage,
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

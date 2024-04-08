@@ -16,9 +16,6 @@ const AboutCompanyPage = () => {
             <PageTitle pageTitle={'About Us'} pagesub={'About'} />
             <About/>
             <TheStory/>
-            <Testimonial tClass={'testimonials-pg-section'}/>
-            <CtaSection ctaClass={'about-pg-cta-section'}/>
-            <BlogSection/>
             <Footer />
             <Scrollbar />
         </Fragment>

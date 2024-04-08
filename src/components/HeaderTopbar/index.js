@@ -10,9 +10,9 @@ const HeaderTopbar = (props) => {
                     <div className="col col-lg-10 col-12">
                         <div className="contact-info">
                             <ul className="clearfix">
-                                <li><span>Call Us:</span> 548978478</li>
-                                <li><span>Email us:</span> demo@example.com</li>
-                                <li><span>Our address:</span> 45 Dreem street Austria</li>
+                                <li><span>전화번호:</span> 548978478</li>
+                                <li><span>이메일:</span> demo@example.com</li>
+                                <li><span>주소:</span> 45 Dreem street Austria</li>
                             </ul>
                         </div>
                     </div>
