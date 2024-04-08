@@ -1,5 +1,5 @@
-.checkoutWrapper {
-  .checkoutCard {
+.patentWrapper {
+  .patentCard {
     margin-bottom: 20px;
 
     button.collapseBtn {
@@ -30,7 +30,7 @@
       }
     }
 
-    .chCardBody {
+    .patentCardBody {
       padding: 15px;
 
       .formSelect {
@@ -103,36 +103,9 @@
     }
   }
 
-  .cuponWrap {
-    .cuponForm {
+  .patentItem {
+    .mt-10 {
       margin-top: 10px;
-
-      button {
-        margin-top: 10px;
-      }
-    }
-  }
-
-  .cardType {
-    display: flex;
-    justify-content: space-between;
-    margin: 0 -5px 20px;
-
-    .cardItem {
-      margin: 5px;
-      flex-basis: calc(100% * (1 / 4) - 10px);
-      text-align: center;
-      border: 1px solid #ddd;
-      padding: 18px 0;
-      display: flex;
-      align-items: center;
-      flex-wrap: wrap;
-      justify-content: center;
-      cursor: pointer;
-
-      &.active {
-        background: #f9f9f9;
-      }
     }
   }
 
@@ -175,7 +148,7 @@
   }
 }
 
-.cuponWrapper {
+.patentBox {
   padding: 30px;
   box-shadow: 0px 5px 15px 0px rgba(62, 65, 159, 0.1);
 
@@ -203,7 +176,7 @@
   }
 }
 
-.cBtn.cBtnBlack {
+button.applyBtn {
   color: #fff;
   padding: 9px 60px;
   background: #c9b38c;
@@ -221,6 +194,7 @@
 
 button.pcBtn {
   color: #fff;
+  background: #333;
   font-size: 16px;
   font-weight: 600;
   margin-left: 10px;

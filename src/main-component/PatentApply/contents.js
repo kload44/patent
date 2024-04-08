@@ -1,4 +1,5 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Button,
   Checkbox,
@@ -12,28 +13,23 @@ import {
 import { Controller, useForm } from "react-hook-form";
 import { base64String } from "../../common/fileEncoder";
 import "./style.scss";
-import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { setApplyFg, setPatent } from "../../store/actions/patent/action";
+
 const { daum } = window;
 
 const Contents = () => {
-  const history = useNavigate();
-  // states
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { applyFg } = useSelector((state) => state.patent);
+  console.log(applyFg);
   const [tabs, setExpanded] = useState({
     patent: true,
     applicant: false,
     inventor: false,
     etc: false,
   });
-
-  const {
-    handleSubmit,
-    control,
-    setError,
-    setValue,
-    formState: { errors },
-  } = useForm({
-    shouldFocusError: true,
-  });
+  const fileRefs = Array.from({ length: 6 }).map(() => useRef(null));
 
   const [step, setStep] = useState([true, false, false, false]);
   const [proposerKind, setProposerKind] = useState("개인");
@@ -45,25 +41,23 @@ const Contents = () => {
   const [corporationCertificate, setCorporationCertificate] = useState(null);
   const [smallMediumConfirm, setSmallMediumConfirm] = useState(null);
 
-  // const mutation = useMutation(
-  //   async (data) => {
-  //     return await getPatentApply(data);
-  //   },
-  //   {
-  //     enabled: false,
-  //     onSuccess: (res) => {
-  //       if (res.status === "success") {
-  //         toast.success("임시출원을 신청하였습니다.");
-  //         history.push("/mypage");
-  //       } else {
-  //         toast.success("제출에 실패하였습니다.");
-  //       }
-  //     },
-  //     onError: () => {
-  //       toast.success("제출에 실패하였습니다.");
-  //     },
-  //   },
-  // );
+  const {
+    handleSubmit,
+    control,
+    setError,
+    setValue,
+    formState: { errors },
+  } = useForm({
+    shouldFocusError: true,
+  });
+
+  useEffect(() => {
+    console.log(applyFg);
+    if (applyFg) {
+      dispatch(setApplyFg());
+      navigate("/mypage");
+    }
+  }, [applyFg]);
 
   // tabs handler
   const onClickTab = (name) => {
@@ -172,6 +166,8 @@ const Contents = () => {
         type: "manual",
         message: "문서를 업로드해 주세요.",
       });
+      fileRefs[0].current.focus();
+
       return;
     }
 
@@ -181,6 +177,8 @@ const Contents = () => {
           type: "manual",
           message: "서명 이미지를 업로드해 주세요.",
         });
+        fileRefs[1].current.focus();
+
         return;
       }
     } else {
@@ -189,6 +187,7 @@ const Contents = () => {
           type: "manual",
           message: "법인 인감 이미지를 업로드해 주세요.",
         });
+        fileRefs[2].current.focus();
         return;
       }
 
@@ -197,19 +196,22 @@ const Contents = () => {
           type: "manual",
           message: "법인 사업자등록증을 업로드해 주세요.",
         });
+        fileRefs[3].current.focus();
         return;
       }
     }
 
-    console.log({
-      ...data,
-      document: document,
-      proposerStamp: proposerStamp,
-      corporationStamp: corporationStamp,
-      bizCertificate: bizCertificate,
-      corporationCertificate: corporationCertificate,
-      smallMediumConfirm: smallMediumConfirm,
-    });
+    dispatch(
+      setPatent({
+        ...data,
+        document: document,
+        proposerStamp: proposerStamp,
+        corporationStamp: corporationStamp,
+        bizCertificate: bizCertificate,
+        corporationCertificate: corporationCertificate,
+        smallMediumConfirm: smallMediumConfirm,
+      })
+    );
   };
 
   const openSearchPostcode = (type) => {
@@ -236,7 +238,7 @@ const Contents = () => {
   return (
     <Fragment>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Grid className="checkoutWrapper section-padding mt-5">
+        <Grid className="patentWrapper section-padding mt-5">
           <Grid
             className="container"
             container
@@ -253,8 +255,8 @@ const Contents = () => {
                   </span>
                 </h2>
               </div>
-              <Grid className="cuponWrapper">
-                <Grid className="cuponWrap checkoutCard">
+              <Grid className="patentBox">
+                <Grid className="patentItem patentCard">
                   <Button
                     className="collapseBtn"
                     fullWidth
@@ -271,7 +273,7 @@ const Contents = () => {
                     </span>
                   </Button>
                   <Collapse in={tabs.patent} timeout="auto" unmountOnExit>
-                    <Grid className="chCardBody">
+                    <Grid className="patentCardBody">
                       <p>
                         Tip. 발명의 명칭은 향후 정규출원시 바꿀 수 있습니다.
                         <br />
@@ -305,7 +307,7 @@ const Contents = () => {
                     </Grid>
                   </Collapse>
                 </Grid>
-                <Grid className="cuponWrap checkoutCard">
+                <Grid className="patentItem patentCard">
                   <Button
                     className="collapseBtn"
                     fullWidth
@@ -322,27 +324,30 @@ const Contents = () => {
                     </span>
                   </Button>
                   <Collapse in={tabs.patent} timeout="auto" unmountOnExit>
-                    <Grid className="chCardBody">
+                    <Grid className="patentCardBody">
                       <p>
                         <span className="required-field">
                           ※기술문서보완을 위해 문서는 편집가능한
                           원문(예:워드)으로 업로드해주세요.
                         </span>
                       </p>
-                      <div className="cuponForm">
+                      <div className="mt-10">
                         <div className="file-box">
                           <Controller
                             name="documentFile"
                             control={control}
-                            render={({ field: { ref, ...field } }) => (
+                            render={({ field }) => (
                               <input
                                 {...field}
-                                ref={ref}
+                                ref={(e) => {
+                                  fileRefs[0].current = e;
+                                }}
                                 type="file"
                                 name="documentFile"
                                 className="formInput radiusNone"
                                 onChange={(e) => onChangeFile(e)}
                                 accept=".PDF, .DOC, .DOCX, .PPT, .PPTX, .HWP, .JPG, .TIF"
+                                autoFocus
                               />
                             )}
                           />
@@ -382,7 +387,7 @@ const Contents = () => {
                     </Grid>
                   </Collapse>
                 </Grid>
-                <Grid className="cuponWrap checkoutCard">
+                <Grid className="patentItem patentCard">
                   <Button
                     className="collapseBtn"
                     fullWidth
@@ -399,7 +404,7 @@ const Contents = () => {
                     </span>
                   </Button>
                   <Collapse in={tabs.patent} timeout="auto" unmountOnExit>
-                    <Grid className="chCardBody">
+                    <Grid className="patentCardBody">
                       <Controller
                         name="openFlag"
                         control={control}
@@ -427,7 +432,7 @@ const Contents = () => {
                     </Grid>
                   </Collapse>
                 </Grid>
-                <Grid className="cuponWrap checkoutCard">
+                <Grid className="patentItem patentCard">
                   <Button
                     className="collapseBtn"
                     fullWidth
@@ -444,7 +449,7 @@ const Contents = () => {
                     </span>
                   </Button>
                   <Collapse in={tabs.patent} timeout="auto" unmountOnExit>
-                    <Grid className="chCardBody">
+                    <Grid className="patentCardBody">
                       <p>
                         ※ 임시명세서 방식 출원은 국가에 따라 정규출원 시
                         우선권의 효과를 인정하지 않을 수도 있습니다.{" "}
@@ -489,8 +494,8 @@ const Contents = () => {
               <div>
                 <h2>2단계 : 출원인 정보 입력</h2>
               </div>
-              <Grid className="cuponWrapper">
-                <Grid className="cuponWrap checkoutCard">
+              <Grid className="patentBox">
+                <Grid className="patentItem patentCard">
                   <Button
                     className="collapseBtn"
                     fullWidth
@@ -506,7 +511,7 @@ const Contents = () => {
                     </span>
                   </Button>
                   <Collapse in={tabs.applicant} timeout="auto" unmountOnExit>
-                    <Grid className="chCardBody">
+                    <Grid className="patentCardBody">
                       <Controller
                         name="proposerKind"
                         control={control}
@@ -542,7 +547,7 @@ const Contents = () => {
                     </Grid>
                   </Collapse>
                 </Grid>
-                <Grid className="cuponWrap checkoutCard">
+                <Grid className="patentItem patentCard">
                   <Button
                     className="collapseBtn"
                     fullWidth
@@ -562,8 +567,8 @@ const Contents = () => {
                     timeout="auto"
                     unmountOnExit
                   >
-                    <Grid className="chCardBody">
-                      <div className="cuponForm">
+                    <Grid className="patentCardBody">
+                      <div className="mt-10">
                         <Grid container spacing={3}>
                           <Grid item sm={6} xs={12}>
                             <Controller
@@ -577,11 +582,8 @@ const Contents = () => {
                                   name="proposerNameKr"
                                   className="formInput radiusNone"
                                   placeholder="한글 이름"
+                                  variant="filled"
                                   label="한글이름"
-                                  InputLabelProps={{
-                                    shrink: true,
-                                    position: "top",
-                                  }}
                                   inputProps={{
                                     maxLength: 20,
                                   }}
@@ -609,6 +611,7 @@ const Contents = () => {
                                   name="proposerNameEn"
                                   className="formInput radiusNone"
                                   placeholder="영문 이름"
+                                  variant="filled"
                                   label={
                                     <>
                                       영문이름
@@ -617,9 +620,6 @@ const Contents = () => {
                                       </span>
                                     </>
                                   }
-                                  InputLabelProps={{
-                                    shrink: true,
-                                  }}
                                   inputProps={{
                                     maxLength: 20,
                                   }}
@@ -646,6 +646,7 @@ const Contents = () => {
                                   name="proposer_social_no_first"
                                   className="formInput radiusNone"
                                   placeholder="주민등록번호 앞자리"
+                                  variant="filled"
                                   label="주민등록번호"
                                   InputLabelProps={{
                                     shrink: true,
@@ -679,6 +680,7 @@ const Contents = () => {
                                   name="proposer_social_no_last"
                                   className="formInput radiusNone"
                                   placeholder="주민등록번호 뒷자리"
+                                  variant="filled"
                                   label=" "
                                   InputLabelProps={{
                                     shrink: true,
@@ -713,6 +715,7 @@ const Contents = () => {
                                     name="proposerPostcode"
                                     className="formInput radiusNone"
                                     placeholder="우편번호"
+                                    variant="filled"
                                     label="우편번호"
                                     InputLabelProps={{
                                       shrink: true,
@@ -742,7 +745,6 @@ const Contents = () => {
                                   openSearchPostcode("proposer");
                                 }}
                               >
-                                {" "}
                                 우편번호 검색
                               </Button>
                             </Grid>
@@ -760,6 +762,7 @@ const Contents = () => {
                                   name="proposerAddress1"
                                   className="formInput radiusNone"
                                   placeholder="주소"
+                                  variant="filled"
                                   label="주소"
                                   InputLabelProps={{
                                     shrink: true,
@@ -784,6 +787,7 @@ const Contents = () => {
                                   name="proposerAddress2"
                                   className="formInput radiusNone"
                                   placeholder="상세주소"
+                                  variant="filled"
                                   label="상세주소"
                                   InputLabelProps={{
                                     shrink: true,
@@ -801,7 +805,7 @@ const Contents = () => {
                       <p className="mt-5">
                         도장 또는 서명 이미지 업로드 (파일형식 : JPG, JPEG, PNG)
                       </p>
-                      <div className="cuponForm">
+                      <div className="mt-10">
                         <div className="file-box">
                           <Controller
                             name="proposerStampFile"
@@ -809,6 +813,9 @@ const Contents = () => {
                             render={({ field }) => (
                               <input
                                 {...field}
+                                ref={(e) => {
+                                  fileRefs[1].current = e;
+                                }}
                                 type="file"
                                 name="proposerStampFile"
                                 className="formInput radiusNone"
@@ -832,8 +839,8 @@ const Contents = () => {
                     timeout="auto"
                     unmountOnExit
                   >
-                    <Grid className="chCardBody">
-                      <div className="cuponForm">
+                    <Grid className="patentCardBody">
+                      <div className="mt-10">
                         <Grid container spacing={3}>
                           <Grid item sm={6} xs={12}>
                             <Controller
@@ -855,6 +862,7 @@ const Contents = () => {
                                   name="proposerCompanyNameKr"
                                   className="formInput radiusNone"
                                   placeholder="법인 한글 이름"
+                                  variant="filled"
                                   label={
                                     <>
                                       법인 한글이름
@@ -899,6 +907,7 @@ const Contents = () => {
                                   name="proposerCompanyNameEn"
                                   className="formInput radiusNone"
                                   placeholder="법인 영문 이름"
+                                  variant="filled"
                                   label={
                                     <>
                                       법인 영문이름
@@ -935,6 +944,7 @@ const Contents = () => {
                                   name="proposerCeoName"
                                   className="formInput radiusNone"
                                   placeholder="대표자 이름"
+                                  variant="filled"
                                   label="대표자 이름"
                                   InputLabelProps={{
                                     shrink: true,
@@ -958,6 +968,7 @@ const Contents = () => {
                                   name="proposerCeoPhone"
                                   className="formInput radiusNone"
                                   placeholder="대표자 전화번호"
+                                  variant="filled"
                                   label="대표자 전화번호"
                                   InputLabelProps={{
                                     shrink: true,
@@ -981,6 +992,7 @@ const Contents = () => {
                                   name="proposerCeoEmail"
                                   className="formInput radiusNone"
                                   placeholder="대표자 이메일"
+                                  variant="filled"
                                   label="대표자 이메일"
                                   InputLabelProps={{
                                     shrink: true,
@@ -997,7 +1009,7 @@ const Contents = () => {
                               법인 인감이미지 업로드 (파일형식 : JPG, JPEG, PNG)
                               <span className="required-field m-1">*</span>
                             </p>
-                            <div className="cuponForm">
+                            <div className="mt-10">
                               <div className="file-box">
                                 <Controller
                                   name="corporationStampFile"
@@ -1005,6 +1017,9 @@ const Contents = () => {
                                   render={({ field }) => (
                                     <input
                                       {...field}
+                                      ref={(e) => {
+                                        fileRefs[2].current = e;
+                                      }}
                                       type="file"
                                       name="corporationStampFile"
                                       className="formInput radiusNone"
@@ -1026,7 +1041,7 @@ const Contents = () => {
                               법인 사업자등록증 업로드{" "}
                               <span className="required-field m-1">*</span>
                             </p>
-                            <div className="cuponForm">
+                            <div className="mt-10">
                               <div className="file-box">
                                 <Controller
                                   name="bizCertificateFile"
@@ -1034,6 +1049,9 @@ const Contents = () => {
                                   render={({ field }) => (
                                     <input
                                       {...field}
+                                      ref={(e) => {
+                                        fileRefs[3].current = e;
+                                      }}
                                       type="file"
                                       name="bizCertificateFile"
                                       className="formInput radiusNone"
@@ -1061,7 +1079,7 @@ const Contents = () => {
                                 필요가 없습니다.
                               </span>
                             </p>
-                            <div className="cuponForm">
+                            <div className="mt-10">
                               <div className="file-box">
                                 <Controller
                                   name="corporationCertificateFile"
@@ -1069,6 +1087,9 @@ const Contents = () => {
                                   render={({ field }) => (
                                     <input
                                       {...field}
+                                      ref={(e) => {
+                                        fileRefs[4].current = e;
+                                      }}
                                       type="file"
                                       name="corporationCertificateFile"
                                       className="formInput radiusNone"
@@ -1102,7 +1123,7 @@ const Contents = () => {
                                 납부하지 않을 경우 출원이 무효로 됩니다.
                               </span>
                             </p>
-                            <div className="cuponForm">
+                            <div className="mt-10">
                               <div className="file-box">
                                 <Controller
                                   name="smallMediumConfirmFile"
@@ -1110,6 +1131,9 @@ const Contents = () => {
                                   render={({ field }) => (
                                     <input
                                       {...field}
+                                      ref={(e) => {
+                                        fileRefs[5].current = e;
+                                      }}
                                       type="file"
                                       name="smallMediumConfirmFile"
                                       className="formInput radiusNone"
@@ -1153,8 +1177,8 @@ const Contents = () => {
               <div>
                 <h2>3단계 : 발명자 정보 입력</h2>
               </div>
-              <Grid className="cuponWrapper">
-                <Grid className="cuponWrap checkoutCard">
+              <Grid className="patentBox">
+                <Grid className="patentItem patentCard">
                   <Button
                     className="collapseBtn"
                     fullWidth
@@ -1170,7 +1194,7 @@ const Contents = () => {
                     </span>
                   </Button>
                   <Collapse in={tabs.inventor} timeout="auto" unmountOnExit>
-                    <Grid className="chCardBody">
+                    <Grid className="patentCardBody">
                       <p>
                         <span>
                           ① 발명자는 발명을 완성하는데 실질적으로 기여한 사람을
@@ -1180,7 +1204,7 @@ const Contents = () => {
                         <span>② 법인은 발명자가 될 수 없습니다.</span>
                         <br />
                       </p>
-                      <div className="cuponForm">
+                      <div className="mt-10">
                         <Grid container spacing={3}>
                           <Grid item sm={6} xs={12}>
                             <Controller
@@ -1194,6 +1218,7 @@ const Contents = () => {
                                   name="inventorNameKr"
                                   className="formInput radiusNone"
                                   placeholder="한글 이름"
+                                  variant="filled"
                                   label="발명자 한글이름"
                                   type="text"
                                   InputLabelProps={{
@@ -1219,6 +1244,7 @@ const Contents = () => {
                                   name="inventorNameEn"
                                   className="formInput radiusNone"
                                   placeholder="영문 이름"
+                                  variant="filled"
                                   label="발명자 영문이름"
                                   InputLabelProps={{
                                     shrink: true,
@@ -1243,6 +1269,7 @@ const Contents = () => {
                                   name="inventor_social_no_first"
                                   className="formInput radiusNone"
                                   placeholder="주민등록번호 앞자리"
+                                  variant="filled"
                                   label="발명자 주민등록번호"
                                   InputLabelProps={{
                                     shrink: true,
@@ -1276,6 +1303,7 @@ const Contents = () => {
                                   name="inventor_social_no_last"
                                   className="formInput radiusNone"
                                   placeholder="주민등록번호 뒷자리"
+                                  variant="filled"
                                   label=" "
                                   InputLabelProps={{
                                     shrink: true,
@@ -1309,8 +1337,9 @@ const Contents = () => {
                                     type="text"
                                     name="inventorPostcode"
                                     className="formInput radiusNone"
-                                    placeholder="우편번호"
-                                    label="우편번호"
+                                    placeholder="우편 번호"
+                                    variant="filled"
+                                    label="우편 번호"
                                     InputLabelProps={{
                                       shrink: true,
                                     }}
@@ -1357,6 +1386,7 @@ const Contents = () => {
                                   name="inventorAddress1"
                                   className="formInput radiusNone"
                                   placeholder="주소"
+                                  variant="filled"
                                   label="주소"
                                   InputLabelProps={{
                                     shrink: true,
@@ -1380,8 +1410,9 @@ const Contents = () => {
                                   type="text"
                                   name="inventorAddress2"
                                   className="formInput radiusNone"
-                                  placeholder="상세주소"
-                                  label="상세주소"
+                                  placeholder="상세 주소"
+                                  variant="filled"
+                                  label="상세 주소"
                                   InputLabelProps={{
                                     shrink: true,
                                   }}
@@ -1404,8 +1435,8 @@ const Contents = () => {
               <div>
                 <h2>4단계 : 기타 정보 입력</h2>
               </div>
-              <Grid className="cuponWrapper">
-                <Grid className="cuponWrap checkoutCard">
+              <Grid className="patentBox">
+                <Grid className="patentItem patentCard">
                   <Button
                     className="collapseBtn"
                     fullWidth
@@ -1421,14 +1452,14 @@ const Contents = () => {
                     </span>
                   </Button>
                   <Collapse in={tabs.etc} timeout="auto" unmountOnExit>
-                    <Grid className="chCardBody">
+                    <Grid className="patentCardBody">
                       <p>
                         <span className="focus-field">
                           ※ 본 임시출원건에 대하여 연락 가능한 담당자 정보를
                           입력하세요.
                         </span>
                       </p>
-                      <div className="cuponForm">
+                      <div className="mt-10">
                         <Grid container spacing={3}>
                           <Grid item sm={6} xs={12}>
                             <Controller
@@ -1447,6 +1478,7 @@ const Contents = () => {
                                   name="managerName"
                                   className="formInput radiusNone"
                                   placeholder="담당자 이름"
+                                  variant="filled"
                                   label={
                                     <>
                                       담당자 이름
@@ -1484,10 +1516,11 @@ const Contents = () => {
                                   type="text"
                                   name="managerPhone"
                                   className="formInput radiusNone"
-                                  placeholder="휴대전화번호"
+                                  placeholder="전화번호"
+                                  variant="filled"
                                   label={
                                     <>
-                                      휴대전화번호
+                                      전화번호
                                       <span className="required-field m-1">
                                         *
                                       </span>
@@ -1525,6 +1558,7 @@ const Contents = () => {
                                   name="managerEmail"
                                   className="formInput radiusNone"
                                   placeholder="이메일 주소"
+                                  variant="filled"
                                   label={
                                     <>
                                       이메일 주소
@@ -1561,6 +1595,7 @@ const Contents = () => {
                                   name="managerPosition"
                                   className="formInput radiusNone"
                                   placeholder="직책"
+                                  variant="filled"
                                   label="직책"
                                   InputLabelProps={{
                                     shrink: true,
@@ -1586,6 +1621,7 @@ const Contents = () => {
                                   name="memo"
                                   className="formInput radiusNone note"
                                   placeholder="전달하실 내용을 적어주세요"
+                                  variant="filled"
                                   label="메모"
                                   InputLabelProps={{
                                     shrink: true,
@@ -1603,7 +1639,7 @@ const Contents = () => {
                   </Collapse>
                 </Grid>
 
-                {/* <Grid className="cuponWrap checkoutCard">
+                {/* <Grid className="patentItem patentCard">
                                     <Button className="collapseBtn" fullWidth onClick={() => onClickTab("etc")}>
                                         2. 영수증 선택
                                         <span className="required-field ml-5">*</span>
@@ -1616,7 +1652,7 @@ const Contents = () => {
                                         </span>
                                     </Button>
                                     <Collapse in={tabs.etc} timeout="auto" unmountOnExit>
-                                        <Grid className="chCardBody">
+                                        <Grid className="patentCardBody">
                                             <Controller
                                                 name="receipt_fg"
                                                 control={control}
@@ -1723,7 +1759,7 @@ const Contents = () => {
                                     </Collapse>
                                 </Grid> */}
 
-                <Grid className="cuponWrap checkoutCard">
+                <Grid className="patentItem patentCard">
                   <Button
                     className="collapseBtn"
                     fullWidth
@@ -1740,7 +1776,7 @@ const Contents = () => {
                     </span>
                   </Button>
                   <Collapse in={tabs.etc} timeout="auto" unmountOnExit>
-                    <Grid className="chCardBody">
+                    <Grid className="patentCardBody">
                       <p className="mt-3">
                         1. 업로드하신 도장(서명)이미지를 기반으로 아래 내용들이
                         포함된 표준 위임장이 파트너 특허사무소/특허법인을 통해
@@ -1844,7 +1880,7 @@ const Contents = () => {
               alignItems="center"
             >
               <Button
-                className="cBtn cBtnBlack mt-20"
+                className="applyBtn mt-20"
                 onClick={() => onClickButton(this)}
               >
                 {step.includes(false) ? "다음" : "특허 신청"}

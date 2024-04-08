@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import SideBar from "./SideBar";
+import { getPatentList } from "./../../store/actions/patent/action";
 import {
   openPatentFinishModal,
   openPatentModal,
@@ -14,19 +15,10 @@ const Contents = (props) => {
   const [activeStatus, setActiveStatus] = useState("R");
   const [isPayment, setIsPayment] = useState(true);
 
-  // const { data: patents, isLoading } = useQuery(
-  //   ["patent", "myPatentList"],
-  //   async () => {
-  //     return await getMyPatentList();
-  //   },
-  //   {
-  //     enabled: true,
-  //     onSuccess: (res) => {
-  //       consoleLog(res);
-  //     },
-  //     onError: () => {},
-  //   },
-  // );
+  useEffect(() => {
+    // 컴포넌트가 마운트될 때 fetchData action을 dispatch하여 API 호출
+    dispatch(getPatentList());
+  }, [dispatch]);
 
   // const { data: applyCount, isLoading: isLoadingApplyCount } = useQuery(
   //   ["payment", "applyCount"],
@@ -107,7 +99,7 @@ const Contents = (props) => {
                   <p>임시출원 준비중</p>
                   <h3 className="apply-count">
                     {
-                      patents?.data?.filter(
+                      patents?.filter(
                         (item) => item.status === "R" || item.status === "P"
                       ).length
                     }
@@ -122,10 +114,7 @@ const Contents = (props) => {
                 >
                   <p>임시출원 완료</p>
                   <h3 className="apply-count">
-                    {
-                      patents?.data?.filter((item) => item.status === "F")
-                        .length
-                    }
+                    {patents?.filter((item) => item.status === "F").length}
                     <span>건</span>
                   </h3>
                 </div>
@@ -150,7 +139,7 @@ const Contents = (props) => {
                     </tr>
                   </thead>
                   <tbody>
-                    {patents?.data
+                    {patents
                       ?.filter(
                         (patent) =>
                           patent.status === "R" || patent.status === "P"
@@ -201,7 +190,7 @@ const Contents = (props) => {
                   "R" === activeStatus ? "d-flex d-md-none" : "d-none"
                 }`}
               >
-                {patents?.data
+                {patents
                   ?.filter(
                     (patent) => patent.status === "R" || patent.status === "P"
                   )
@@ -277,7 +266,7 @@ const Contents = (props) => {
                     </tr>
                   </thead>
                   <tbody>
-                    {patents?.data
+                    {patents
                       ?.filter((patent) => patent.status === "F")
                       .map((patent, index) => (
                         <tr
@@ -323,7 +312,7 @@ const Contents = (props) => {
                   "F" === activeStatus ? "d-flex d-md-none" : "d-none"
                 }`}
               >
-                {patents?.data
+                {patents
                   ?.filter((patent) => patent.status === "F")
                   .map((patent, index) => (
                     <div

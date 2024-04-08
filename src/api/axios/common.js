@@ -122,7 +122,7 @@ export const getPatentApply = async (data) => {
   if (isDev) {
     return dummyAPI("patentApply");
   }
-  
+
   const params = {
     ...data,
     registerId: getAccount().accountId || 0,
@@ -140,7 +140,7 @@ export const getPatentApply = async (data) => {
   return PatentAPI.patentApply(params);
 };
 
-export const getMyPatentList = async (data) => {
+export const getMyPatentList = async () => {
   if (isDev) {
     return dummyAPI("myPatentList");
   }
