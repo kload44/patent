@@ -12,7 +12,6 @@ import { getMyPatentList, getPatentApply } from "../../../api/axios/common";
 export const getPatentList = () => async (dispatch) => {
   try {
     const response = await getMyPatentList();
-    console.log(response);
     if (response.status == "success") {
       dispatch({
         type: POST_MY_PATENT_LIST_SUCCESS,

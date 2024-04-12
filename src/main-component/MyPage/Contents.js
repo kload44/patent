@@ -20,22 +20,6 @@ const Contents = (props) => {
     dispatch(getPatentList());
   }, [dispatch]);
 
-  // const { data: applyCount, isLoading: isLoadingApplyCount } = useQuery(
-  //   ["payment", "applyCount"],
-  //   async () => {
-  //     return await getApplyCount();
-  //   },
-  //   {
-  //     enabled: true,
-  //     onSuccess: (res) => {
-  //       if (res.status === "success") {
-  //         if (res.data?.totalTempApplyCount == 0) setIsPayment(true);
-  //       }
-  //     },
-  //     onError: () => {},
-  //   },
-  // );
-
   const onClickMenu = (status) => {
     setActiveStatus(status);
   };
@@ -123,7 +107,7 @@ const Contents = (props) => {
               </div>
 
               <div
-                className={`row mt-5 ${
+                className={`row mt-2 ${
                   "R" === activeStatus ? "d-none d-md-block" : "d-none"
                 } `}
               >
@@ -186,7 +170,7 @@ const Contents = (props) => {
               </div>
 
               <div
-                className={`row mt-5 align-items-center  ${
+                className={`row mt-2 align-items-center  ${
                   "R" === activeStatus ? "d-flex d-md-none" : "d-none"
                 }`}
               >
@@ -250,7 +234,7 @@ const Contents = (props) => {
               </div>
 
               <div
-                className={`row mt-5 ${
+                className={`row mt-2 ${
                   "F" === activeStatus ? "d-none d-md-block" : "d-none"
                 } `}
               >
@@ -308,7 +292,7 @@ const Contents = (props) => {
               </div>
 
               <div
-                className={`row mt-5 align-items-center ${
+                className={`row mt-2 align-items-center ${
                   "F" === activeStatus ? "d-flex d-md-none" : "d-none"
                 }`}
               >

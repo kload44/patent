@@ -1,24 +1,24 @@
 import React, { useEffect } from "react";
 import Modal from "react-modal";
-import { useResetRecoilState, useRecoilValue } from "recoil";
-import { patentModalAtom } from "../../model/Modal";
-import { toast } from "react-toastify";
+import { useDispatch, useSelector } from "react-redux";
+import { closePatentModal } from "../../store/actions/modal/action";
 
 const PatentModal = () => {
-  const modal = useRecoilValue(patentModalAtom);
-  const resetModal = useResetRecoilState(patentModalAtom);
+  const dispatch = useDispatch();
+  const { patent: modal, isLoading } = useSelector((state) => state.modal);
+  console.log(modal);
 
   useEffect(() => {
     // 모달이 열릴 때 이벤트 처리
-    if (modal.modalState) {
+    if (modal.isOpen) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "auto";
     }
-  }, [modal.modalState]);
+  }, [modal.isOpen]);
 
   const closeModal = () => {
-    resetModal();
+    dispatch(closePatentModal());
   };
 
   const onClickDownload = (fileUrl) => {
@@ -34,7 +34,7 @@ const PatentModal = () => {
   return (
     <Modal
       className={"patent-modal"}
-      isOpen={modal.modalState}
+      isOpen={modal.isOpen}
       onRequestClose={closeModal}
       contentLabel="임시출원 정보"
       style={{
@@ -78,25 +78,36 @@ const PatentModal = () => {
         <div className="contents-box">
           <div>
             <p className="contents-subtitle">1. 발명의 키워드</p>
-            <p className="contents-info">{modal.modalData?.keyword}</p>
+            <p className="contents-info">{modal?.data?.keyword}</p>
           </div>
 
           <div>
             <p className="contents-subtitle">2. 기술자료</p>
             <p className="contents-info">
-              <a href="#" onClick={() => onClickDownload(modal.modalData?.document?.fileUrl)}>
+              <a
+                href="#"
+                onClick={() => onClickDownload(modal?.data?.document?.fileUrl)}
+              >
                 다운로드 링크
               </a>
             </p>
           </div>
           <div>
-            <p className="contents-subtitle">3. 기술자료 내용이 외부에 공개여부</p>
-            <p className="contents-info">{modal.modalData?.openFlag ? "예" : "아니오"}</p>
+            <p className="contents-subtitle">
+              3. 기술자료 내용이 외부에 공개여부
+            </p>
+            <p className="contents-info">
+              {modal?.data?.openFlag ? "예" : "아니오"}
+            </p>
           </div>
 
           <div>
-            <p className="contents-subtitle">4. 임시출원 후 1년 이내에 해외출원 여부</p>
-            <p className="contents-info">{modal.modalData?.foreignFlag ? "예" : "아니오"}</p>
+            <p className="contents-subtitle">
+              4. 임시출원 후 1년 이내에 해외출원 여부
+            </p>
+            <p className="contents-info">
+              {modal?.data?.foreignFlag ? "예" : "아니오"}
+            </p>
           </div>
         </div>
       </div>
@@ -106,29 +117,37 @@ const PatentModal = () => {
         <div className="contents-box">
           <div>
             <p className="contents-subtitle">1. 출원인의 종류</p>
-            <p className="contents-info">{modal.modalData?.proposerKind}</p>
+            <p className="contents-info">{modal?.data?.proposerKind}</p>
           </div>
           <div>
-            <p className="contents-subtitle">2. 출원인 정보({modal.modalData?.proposerKind})</p>
-            {modal.modalData?.proposerKind === "개인" ? (
+            <p className="contents-subtitle">
+              2. 출원인 정보({modal?.data?.proposerKind})
+            </p>
+            {modal?.data?.proposerKind === "개인" ? (
               <div>
                 <ul>
                   <li>
-                    {modal.modalData?.proposerNameKr}({modal.modalData?.proposerNameEn})
+                    {modal?.data?.proposerNameKr}({modal?.data?.proposerNameEn})
                   </li>
                   <li>
                     <span>주민등록번호 : </span>
-                    {modal.modalData?.proposerSocialNo}
+                    {modal?.data?.proposerSocialNo}
                   </li>
                   <li>
                     <span>주소 : </span>
-                    {modal.modalData?.proposerPostcode} {modal.modalData?.inventorAddress1}{" "}
-                    {modal.modalData?.inventorAddress2}
+                    {modal?.data?.proposerPostcode}{" "}
+                    {modal?.data?.inventorAddress1}{" "}
+                    {modal?.data?.inventorAddress2}
                   </li>
                   <li>
                     <span>도장&amp;서명 이미지 :</span>
                     <span>
-                      <a href="#" onClick={() => onClickDownload(modal.modalData?.proposerStamp?.fileUrl)}>
+                      <a
+                        href="#"
+                        onClick={() =>
+                          onClickDownload(modal?.data?.proposerStamp?.fileUrl)
+                        }
+                      >
                         다운로드 링크
                       </a>
                     </span>
@@ -139,25 +158,34 @@ const PatentModal = () => {
               <div>
                 <ul>
                   <li>
-                    {modal.modalData?.proposerCompanyNameKr}
-                    {modal.modalData?.proposerCompanyNameEn ? `(${modal.modalData?.proposerCompanyNameEn})` : ""}
+                    {modal?.data?.proposerCompanyNameKr}
+                    {modal?.data?.proposerCompanyNameEn
+                      ? `(${modal?.data?.proposerCompanyNameEn})`
+                      : ""}
                   </li>
                   <li>
                     <span>대표자 이름 : </span>
-                    {modal.modalData?.proposerCeoName}
+                    {modal?.data?.proposerCeoName}
                   </li>
                   <li>
                     <span>대표자 전화번호 : </span>
-                    {modal.modalData?.proposerCeoPhone}
+                    {modal?.data?.proposerCeoPhone}
                   </li>
                   <li>
                     <span>대표자 이메일 : </span>
-                    {modal.modalData?.proposerCeoEmail}
+                    {modal?.data?.proposerCeoEmail}
                   </li>
                   <li>
                     <span>법인 인감 이미지 : </span>
                     <span>
-                      <a href="#" onClick={() => onClickDownload(modal.modalData?.corporationStamp?.fileUrl)}>
+                      <a
+                        href="#"
+                        onClick={() =>
+                          onClickDownload(
+                            modal?.data?.corporationStamp?.fileUrl
+                          )
+                        }
+                      >
                         다운로드 링크
                       </a>
                     </span>
@@ -165,7 +193,12 @@ const PatentModal = () => {
                   <li>
                     <span>법인 사업자등록증 : </span>
                     <span>
-                      <a href="#" onClick={() => onClickDownload(modal.modalData?.bizCertificate?.fileUrl)}>
+                      <a
+                        href="#"
+                        onClick={() =>
+                          onClickDownload(modal?.data?.bizCertificate?.fileUrl)
+                        }
+                      >
                         다운로드 링크
                       </a>
                     </span>
@@ -173,7 +206,14 @@ const PatentModal = () => {
                   <li>
                     <span>법인 인감증명서 : </span>
                     <span>
-                      <a href="#" onClick={() => onClickDownload(modal.modalData?.corporationCertificate?.fileUrl)}>
+                      <a
+                        href="#"
+                        onClick={() =>
+                          onClickDownload(
+                            modal?.data?.corporationCertificate?.fileUrl
+                          )
+                        }
+                      >
                         다운로드 링크
                       </a>
                     </span>
@@ -181,7 +221,14 @@ const PatentModal = () => {
                   <li>
                     <span>법인 중소기업확인서 : </span>
                     <span>
-                      <a href="#" onClick={() => onClickDownload(modal.modalData?.smallMediumConfirm?.fileUrl)}>
+                      <a
+                        href="#"
+                        onClick={() =>
+                          onClickDownload(
+                            modal?.data?.smallMediumConfirm?.fileUrl
+                          )
+                        }
+                      >
                         다운로드 링크
                       </a>
                     </span>
@@ -199,17 +246,19 @@ const PatentModal = () => {
           <div>
             <ul>
               <li>
-                {modal.modalData?.inventorNameKr}{" "}
-                {modal.modalData?.inventorNameKr ? `(${modal.modalData?.inventorNameKr})` : ""}
+                {modal?.data?.inventorNameKr}{" "}
+                {modal?.data?.inventorNameKr
+                  ? `(${modal?.data?.inventorNameKr})`
+                  : ""}
               </li>
               <li>
                 <span>주민등록번호 : </span>
-                {modal.modalData?.inventorSocialNo}
+                {modal?.data?.inventorSocialNo}
               </li>
               <li>
                 <span>주소 : </span>
-                {modal.modalData?.inventorPostcode} {modal.modalData?.inventorAddress1}{" "}
-                {modal.modalData?.inventorAddress2}
+                {modal?.data?.inventorPostcode} {modal?.data?.inventorAddress1}{" "}
+                {modal?.data?.inventorAddress2}
               </li>
             </ul>
           </div>
@@ -222,19 +271,19 @@ const PatentModal = () => {
           <ul>
             <li>
               <span>담당자 이름 : </span>
-              {modal.modalData?.managerName}
+              {modal?.data?.managerName}
             </li>
             <li>
               <span>휴대전화번호 : </span>
-              {modal.modalData?.managerPhone}
+              {modal?.data?.managerPhone}
             </li>
             <li>
               <span>이메일주소 : </span>
-              {modal.modalData?.managerEmail}
+              {modal?.data?.managerEmail}
             </li>
             <li>
               <span>메모 : </span>
-              {modal.modalData?.memo}
+              {modal?.data?.memo}
             </li>
           </ul>
         </div>

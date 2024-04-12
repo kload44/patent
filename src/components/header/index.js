@@ -37,10 +37,23 @@ const Header = (props) => {
       <nav className="navigation navbar navbar-expand-lg navbar-light">
         <div className="container">
           <div className="navbar-header">
-            <MobileMenu />
-            <Link onClick={ClickHandler} className="navbar-brand" to="/home">
-              <img src={Logo} alt="" />
-            </Link>
+            <div>
+              <MobileMenu />
+            </div>
+            <div className="logo-box">
+              <Link onClick={ClickHandler} className="navbar-brand" to="/home">
+                <img src={Logo} alt="" />
+              </Link>
+            </div>
+            <div className="showmenu-patent">
+              <Link
+                onClick={ClickHandler}
+                className="mobile-header-link"
+                to="/apply"
+              >
+                신청
+              </Link>
+            </div>
           </div>
           <div
             id="navbar"

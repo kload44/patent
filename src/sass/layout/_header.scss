@@ -17,7 +17,8 @@
   .navbar-brand {
     @media (max-width: 991px) {
       position: relative;
-      top: -18px;
+      // top: -18px;
+      margin-right: 0;
     }
   }
 
@@ -277,16 +278,26 @@
       width: 100%;
     }
 
-    .navbar-header button {
+    .navbar-header {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+    }
+
+    .navbar-header .logo-box {
+      padding-top: 10px;
+      padding-bottom: 10px;
+    }
+
+    .navbar-header .mobile-header-button {
       background-color: $theme-primary-color;
       width: 40px;
       height: 35px;
       border: 0;
       padding: 5px 10px;
       outline: 0;
-      position: absolute;
-      right: 15px;
-      top: 20px;
       z-index: 20;
 
       span {
@@ -299,6 +310,16 @@
           margin: 0;
         }
       }
+    }
+
+    .navbar-header .mobile-header-link {
+      background-color: $theme-primary-color;
+      color: #fff;
+      border-radius: 50%;
+      border: 0;
+      padding: 15px 11px;
+      outline: 0;
+      z-index: 20;
     }
 
     #navbar {
@@ -555,10 +576,7 @@
     padding-left: 15px;
 
     @include media-query(991px) {
-      right: 90px;
-      top: 0;
-      padding-top: 22px;
-      max-height: 87px;
+      display: none;
     }
 
     @include media-query(450px) {

@@ -1,12 +1,14 @@
 import React, { useState } from "react";
-import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
-import { getJoin } from "../../api/axios/common";
 import { Controller, useForm } from "react-hook-form";
-import { consoleLog } from "../../common";
 import { Button, Grid, TextField } from "@mui/material";
+import { getJoinSuccess } from "../../store/actions/account/action";
 
-const SignUpPage = (props) => {
+const SignUpPage = () => {
+  const navigate = useNavigate();
+  const accountState = useSelector((state) => state.account);
+  const { data, loading, error } = accountState || {};
+
   const {
     register,
     handleSubmit,
@@ -15,27 +17,15 @@ const SignUpPage = (props) => {
     formState: { errors },
   } = useForm();
 
-  // const mutation = useMutation(
-  //   async (data) => {
-  //     return await getJoin(data);
-  //   },
-  //   {
-  //     enabled: false,
-  //     onSuccess: (res) => {
-  //       consoleLog(res);
-  //       if (res.status === "success") {
-  //         toast.success("회원가입이 되었습니다.");
-  //         props.history.push("/login");
-  //       } else {
-  //         toast.warning(res.message);
-  //       }
-  //     },
-  //     onError: () => {},
-  //   },
-  // );
+  useEffect(() => {
+    //로그인시 홈으로 이동합니다.
+    if (data?.isJoin && error == null) {
+      navigate("/login");
+    }
+  }, [data]);
 
   const onSubmit = (data) => {
-    // mutation.mutate(data);
+    dispatch(getJoinSuccess(data));
   };
 
   return (
@@ -112,8 +102,10 @@ const SignUpPage = (props) => {
                 rules={{
                   required: "비밀번호는 필수 입력 항목입니다.",
                   pattern: {
-                    value: /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&+-^])[A-Za-z\d@$!%*#?&+-^]{8,}$/,
-                    message: "영문, 숫자, 특수문자 조합 및 최소 8자 이상이어야 합니다.",
+                    value:
+                      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&+-^])[A-Za-z\d@$!%*#?&+-^]{8,}$/,
+                    message:
+                      "영문, 숫자, 특수문자 조합 및 최소 8자 이상이어야 합니다.",
                   },
                 }}
                 render={({ field }) => (
@@ -139,7 +131,11 @@ const SignUpPage = (props) => {
             </Grid>
             <Grid item xs={12}>
               <Grid className="formFooter">
-                <Button fullWidth className="cBtn cBtnLarge cBtnTheme" type="submit">
+                <Button
+                  fullWidth
+                  className="cBtn cBtnLarge cBtnTheme"
+                  type="submit"
+                >
                   회원가입
                 </Button>
               </Grid>
@@ -149,7 +145,8 @@ const SignUpPage = (props) => {
                                 </Button>
                             </Grid> */}
               <p className="noteHelp">
-                이미 가입한 계정이 있나요? <Link to="/login">로그인하러 가기</Link>
+                이미 가입한 계정이 있나요?{" "}
+                <Link to="/login">로그인하러 가기</Link>
               </p>
             </Grid>
           </Grid>

@@ -1,4 +1,3 @@
-import { toast } from "react-toastify";
 import {
   OPEN_PATENT_MODAL,
   CLOSE_PATENT_MODAL,
@@ -29,6 +28,12 @@ const init = {
     loading: false,
     error: null,
   },
+  myinfo: {
+    data: null,
+    isOpen: false,
+    loading: false,
+    error: null,
+  },
   alert: {
     data: null,
     isOpen: false,
@@ -40,24 +45,37 @@ const init = {
 export const modalReducer = (state = init, action) => {
   switch (action.type) {
     case OPEN_PATENT_MODAL:
-      const res = action.response?.data;
-      const userInfo = {
-        isLogin: true,
-        accountId: res.accountId,
-        accountKey: res.accountKey,
-        humanName: res.humanName,
-        joinType: res.joinType,
-      };
+      const res = action.modal;
 
       return {
         ...state,
         patent: {
-          ...state.patent,
+          data: res.data,
           isOpen: true,
         },
       };
 
     case CLOSE_PATENT_MODAL:
+      return {
+        ...state,
+        patent: {
+          data: null,
+          isOpen: false,
+          loading: false,
+          error: null,
+        },
+      };
+
+    case OPEN_PATENT_FINISH_MODAL:
+      return {
+        ...state,
+        patentFinish: {
+          data: res.data,
+          isOpen: true,
+        },
+      };
+
+    case CLOSE_PATENT_FINISH_MODAL:
       return {
         ...state,
         patent: {
