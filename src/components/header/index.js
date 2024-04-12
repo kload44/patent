@@ -61,7 +61,7 @@ const Header = (props) => {
           >
             <ul className="nav navbar-nav mb-2 mb-lg-0">
               <li>
-                <Link onClick={ClickHandler} to="/contact">
+                <Link onClick={ClickHandler} to="/pay-info">
                   비용안내
                 </Link>
               </li>

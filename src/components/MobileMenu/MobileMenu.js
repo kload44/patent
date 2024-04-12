@@ -10,7 +10,7 @@ const menus = [
   {
     id: 1,
     title: "비용안내",
-    link: "/",
+    link: "/pay-info",
     loginFg: null,
   },
   {

@@ -14,6 +14,7 @@ import LoginPage from "../LoginPage";
 import SignUpPage from "../SignUpPage";
 import PatentApply from "../PatentApply";
 import MyPage from "../MyPage";
+import PayInfo from "../PayInfoPage";
 
 const AllRoute = () => {
   return (
@@ -37,6 +38,7 @@ const AllRoute = () => {
           <Route path="contact" element={<ContactPage />} />
           <Route path="apply" element={<PatentApply />} />
           <Route path="mypage" element={<MyPage />} />
+          <Route path="pay-info" element={<PayInfo />} />
         </Routes>
       </BrowserRouter>
     </div>
