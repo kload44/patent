@@ -40,7 +40,6 @@ const LoginPage = (props) => {
 
   const onGoogleLoginSuccess = (res) => {
     const userData = jwtDecode(res.credential);
-    console.log(userData);
     dispatch(
       getLoginSuccess({
         email: userData.email,
