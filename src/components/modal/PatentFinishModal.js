@@ -23,6 +23,10 @@ const PatentFinishModal = () => {
   };
 
   const onClickDownload = (fileUrl) => {
+    if (!fileUrl) {
+      alert("파일이 존재하지 않습니다.");
+      return;
+    }
     const newWindow = window.open();
     newWindow.document.title = "인디프로 문서 다운로드";
     newWindow.location.href = fileUrl;
@@ -94,7 +98,7 @@ const PatentFinishModal = () => {
             </p>
             <p className="contents-info">
               {modal?.data?.openFlag
-                ? "공개일 : " + modal?.data?.openDate
+                ? "공개일 : " + (modal?.data?.openDate || "")
                 : "아니오"}
             </p>
           </div>

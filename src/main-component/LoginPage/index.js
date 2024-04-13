@@ -1,21 +1,16 @@
 import React, { useEffect } from "react";
 
-import {
-  Button,
-  Checkbox,
-  FormControlLabel,
-  Grid,
-  TextField,
-} from "@mui/material";
+import { Button, Checkbox, FormControlLabel, Grid, TextField } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import { Controller, useForm } from "react-hook-form";
 
-import "./style.scss";
 import { useGoogleLogin, GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
 import { useDispatch, useSelector } from "react-redux";
 import { getLoginSuccess } from "../../store/actions/account/action";
-import { getAccount } from "../../common/loginInfo";
+import { getAccessToken, getAccount } from "../../common/loginInfo";
+import axiosInstance from "../../api/axios/config";
+import "./style.scss";
 
 const LoginPage = (props) => {
   const navigate = useNavigate();
@@ -26,6 +21,7 @@ const LoginPage = (props) => {
   useEffect(() => {
     //로그인시 홈으로 이동합니다.
     if (getAccount()?.isLogin && data?.isLogin) {
+      // axiosInstance.defaults.headers.common["X-AUTH-TOKEN"] = getAccessToken() || "";
       navigate("/home");
     }
   }, [loading, data]);
@@ -44,6 +40,7 @@ const LoginPage = (props) => {
 
   const onGoogleLoginSuccess = (res) => {
     const userData = jwtDecode(res.credential);
+    console.log(userData);
     dispatch(
       getLoginSuccess({
         email: userData.email,
@@ -102,10 +99,8 @@ const LoginPage = (props) => {
                 rules={{
                   required: "비밀번호는 필수 입력 항목입니다.",
                   pattern: {
-                    value:
-                      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&+-^])[A-Za-z\d@$!%*#?&+-^]{8,}$/,
-                    message:
-                      "영문, 숫자, 특수문자 조합 및 최소 8자 이상이어야 합니다.",
+                    value: /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&+-^])[A-Za-z\d@$!%*#?&+-^]{8,}$/,
+                    message: "영문, 숫자, 특수문자 조합 및 최소 8자 이상이어야 합니다.",
                   },
                 }}
                 render={({ field }) => (
@@ -128,10 +123,7 @@ const LoginPage = (props) => {
             </Grid>
             <Grid item xs={12}>
               <Grid className="formAction">
-                <FormControlLabel
-                  label="로그인 상태 유지"
-                  control={<Checkbox {...register("remember")} />}
-                />
+                <FormControlLabel label="로그인 상태 유지" control={<Checkbox {...register("remember")} />} />
                 {/* <Link to="/forgot-password">비밀번호 찾기</Link> */}
               </Grid>
               <Grid className="formFooter">

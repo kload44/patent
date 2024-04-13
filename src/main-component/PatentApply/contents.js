@@ -52,7 +52,6 @@ const Contents = () => {
   });
 
   useEffect(() => {
-    console.log(applyFg);
     if (applyFg) {
       dispatch(setApplyFg());
       navigate("/mypage");

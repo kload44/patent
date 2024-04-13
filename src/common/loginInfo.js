@@ -12,6 +12,7 @@ export const setAccount = (accountData) => {
 
 export const removeAccount = () => {
   localStorage.removeItem("ACCOUNT-INFO");
+  localStorage.removeItem("X-AUTH-TOKEN");
 };
 
 export const setAccessToken = (accessToken) => {

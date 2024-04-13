@@ -43,10 +43,10 @@ const init = {
 };
 
 export const modalReducer = (state = init, action) => {
+  const res = action.modal;
+
   switch (action.type) {
     case OPEN_PATENT_MODAL:
-      const res = action.modal;
-
       return {
         ...state,
         patent: {
@@ -78,7 +78,7 @@ export const modalReducer = (state = init, action) => {
     case CLOSE_PATENT_FINISH_MODAL:
       return {
         ...state,
-        patent: {
+        patentFinish: {
           data: null,
           isOpen: false,
           loading: false,

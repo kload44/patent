@@ -1,16 +1,12 @@
 import axios from "axios";
-import { getAccessToken } from "../../common/loginInfo";
 
 const instance = axios.create({
   // baseURL: "http://localhost:8084/",
   baseURL: "https://jm-patent-be.startlump.com/",
+  maxBodyLength: "Infinity",
 });
 
-const accessToken = await getAccessToken();
-
-instance.defaults.headers.common["content-type"] =
-  "application/json; charset=utf-8";
-instance.defaults.headers.common["X-AUTH-TOKEN"] = getAccessToken() ?? "";
+instance.defaults.headers.common["content-type"] = "application/json; charset=utf-8";
 
 // instance.defaults.headers.common['content-type'] = 'application/x-www-form-urlencoded'
 
